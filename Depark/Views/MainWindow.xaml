@@ -1,0 +1,169 @@
+﻿<Window
+    x:Class="Depark.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:Depark.ViewModels"
+    Title="MainWindow"
+    Width="1120"
+    Height="630"
+    d:DataContext="{d:DesignInstance viewmodels:MainViewModel}"
+    MouseDown="Window_MouseDown"
+    Style="{StaticResource MaterialDesignWindow}"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid FocusVisualStyle="{x:Null}" Focusable="True">
+        <materialDesign:DialogHost Identifier="RootDialog">
+            <DockPanel>
+                <materialDesign:ColorZone
+                    Padding="16"
+                    DockPanel.Dock="Top"
+                    Mode="Standard">
+                    <DockPanel>
+                        <Button
+                            Command="{Binding OpenEditCompanyMenu}"
+                            DockPanel.Dock="Right"
+                            ToolTip="Seçili Firmayı Düzenle">
+                            <materialDesign:PackIcon
+                                Width="16"
+                                Height="16"
+                                Kind="Pencil" />
+                        </Button>
+                        <Button
+                            Margin="0,0,5,0"
+                            Click="AddCompanyButton_Click"
+                            DockPanel.Dock="Right"
+                            ToolTip="Yeni Firma Ekle">
+                            <materialDesign:PackIcon
+                                Width="16"
+                                Height="16"
+                                Kind="PlusThick" />
+                        </Button>
+                        <TextBlock
+                            Margin="5,0,10,0"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="Siyah" />
+                        <ToggleButton
+                            x:Name="DarkModeToggleButton"
+                            Margin="0,0,5,0"
+                            Click="ThemeChangeButton_Click"
+                            DockPanel.Dock="Right"
+                            ToolTip="Temayı Değiştir">
+                            <materialDesign:PackIcon
+                                Width="16"
+                                Height="16"
+                                Kind="ThemeLightDark" />
+                        </ToggleButton>
+                        <TextBlock
+                            Margin="0,0,5,0"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Text="Beyaz" />
+                        <TextBlock Style="{StaticResource MaterialDesignHeadline3TextBlock}" Text="DEPARK Firmaları" />
+                    </DockPanel>
+                </materialDesign:ColorZone>
+
+                <Grid>
+                    <ProgressBar
+                        Width="50"
+                        Height="50"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        IsIndeterminate="True"
+                        Style="{StaticResource MaterialDesignCircularProgressBar}"
+                        Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Value="0" />
+                    <ScrollViewer Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                        <ListView
+                            ItemsSource="{Binding Companies}"
+                            SelectedItem="{Binding SelectedCompany}"
+                            SelectionMode="Single">
+                            <ListView.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource MaterialDesignGridViewItem}" TargetType="ListViewItem">
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Logo">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Image Source="{Binding Logo}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Firma Adı">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    Text="{Binding Name}"
+                                                    TextWrapping="Wrap"
+                                                    ToolTip="{Binding Name}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Sektör">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    Text="{Binding Sector}"
+                                                    TextWrapping="Wrap"
+                                                    ToolTip="{Binding Sector}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Lokasyon">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    Text="{Binding Location}"
+                                                    TextWrapping="Wrap"
+                                                    ToolTip="{Binding Location}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Tür">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    Text="{Binding Type}"
+                                                    TextWrapping="Wrap"
+                                                    ToolTip="{Binding Type}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Web Sitesi">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <Hyperlink NavigateUri="{Binding Website}" RequestNavigate="Hyperlink_RequestNavigate">
+                                                        <TextBlock Text="Link" />
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Ekstra Not">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    Text="{Binding Extra}"
+                                                    TextWrapping="Wrap"
+                                                    ToolTip="{Binding Extra}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </ScrollViewer>
+                </Grid>
+            </DockPanel>
+        </materialDesign:DialogHost>
+    </Grid>
+</Window>
